@@ -29,24 +29,6 @@ def play_note(frequency: float, duration: float = 2, waveform: str = "piano") ->
             0.1 * np.sin(2 * np.pi * 3 * frequency * t) +  # 3. harmonik
             0.05 * np.sin(2 * np.pi * 4 * frequency * t)  # 4. harmonik
         )
-        # Zarf (envelope) ekleme
-        attack = 0.01
-        decay = 0.1
-        sustain = 0.7
-        release = 0.2
-        
-        envelope = np.ones_like(t)
-        # Attack
-        attack_samples = int(attack * SAMPLE_RATE)
-        envelope[:attack_samples] = np.linspace(0, 1, attack_samples)
-        # Decay
-        decay_samples = int(decay * SAMPLE_RATE)
-        envelope[attack_samples:attack_samples+decay_samples] = np.linspace(1, sustain, decay_samples)
-        # Release
-        release_samples = int(release * SAMPLE_RATE)
-        envelope[-release_samples:] = np.linspace(sustain, 0, release_samples)
-        
-        note = note * envelope
     else:
         note = 0.5 * np.sin(2 * np.pi * frequency * t)
     

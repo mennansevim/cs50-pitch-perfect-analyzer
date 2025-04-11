@@ -61,7 +61,7 @@ def run_voice_test(start_note: Tuple[str, float], direction: int) -> List[Tuple[
         while attempts < MAX_ATTEMPTS:
             print(f"\nŞimdi söylemeniz gereken nota: {turkce_nota} ({frequency:.2f} Hz)")
             print(f"Deneme: {attempts + 1}/{MAX_ATTEMPTS}")
-            play_note(frequency, NOTE_DURATION, waveform="sine")
+            play_note(frequency, NOTE_DURATION, waveform="piano")
 
             audio_data = record_audio(NOTE_DURATION, SAMPLE_RATE)
             dominant_freq = dominant_frequency(audio_data, SAMPLE_RATE)
