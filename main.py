@@ -1,141 +1,196 @@
 from audio_utils import list_and_select_microphone
 from voice_analyzer import run_voice_test
 from visualization import draw_voice_range
+from database import (
+    init_database, 
+    get_user_information, 
+    save_or_update_user,
+    save_test_results,
+    show_scoreboard,
+    show_personal_statistics,
+    show_test_history,
+    show_database_tables,
+    show_merge_sort_info
+)
 
 def print_welcome_screen() -> None:
-    """Hoşgeldin ekranı."""
+    """Welcome screen."""
     print("🎤" + "="*60 + "🎤")
     print("🎵" + " "*18 + "CS50 PITCH PERFECT ANALYZER" + " "*18 + "🎵")
     print("🎼" + " "*15 + "Advanced Voice Range Detection v2.0" + " "*14 + "🎼")
     print("🎤" + "="*60 + "🎤")
     print()
-    print("📋 BU PROGRAM NE YAPAR?")
-    print("   🎯 Ses aralığınızı (vocal range) ölçer")
-    print("   🎼 Hangi notaları söyleyebildiğinizi test eder")
-    print("   📊 Ses tipinizi analiz eder (Soprano, Alto, Tenor, Bas)")
-    print("   📈 Detaylı görsel rapor sunar")
+    print("📋 WHAT DOES THIS PROGRAM DO?")
+    print("   🎯 Measures your vocal range")
+    print("   🎼 Tests which notes you can sing")
+    print("   📊 Analyzes your voice type (Soprano, Alto, Tenor, Bass)")
+    print("   📈 Provides detailed visual reports")
     print()
-    print("⚡ NASIL ÇALIŞIR?")
-    print("   🎹 Program size notalar çalacak")
-    print("   🎤 Siz o notaları tekrar söyleyeceksiniz")
-    print("   🔍 Sistem sesinizi analiz edecek")
-    print("   📊 Sonuçları görsel olarak sunacak")
+    print("⚡ HOW DOES IT WORK?")
+    print("   🎹 Program will play notes for you")
+    print("   🎤 You sing those notes back")
+    print("   🔍 System analyzes your voice")
+    print("   📊 Results are presented visually")
     print()
-    print("💡 İPUÇLARI:")
-    print("   🔊 Sakin bir ortamda test yapın")
-    print("   🎤 Mikrofona yakın konuşun")
-    print("   🎵 Notaları temiz ve net söylemeye çalışın")
-    print("   ⏱️  Acele etmeyin, rahat olun")
+    print("💡 TIPS:")
+    print("   🔊 Test in a quiet environment")
+    print("   🎤 Speak close to the microphone")
+    print("   🎵 Try to sing notes clearly and cleanly")
+    print("   ⏱️  Don't rush, stay relaxed")
     print()
     print("🎤" + "="*60 + "🎤")
 
 def print_test_transition(direction: str, total_successful: int) -> None:
-    """Test geçiş ekranı."""
-    if direction == "bas":
+    """Test transition screen."""
+    if direction == "bass":
         print("\n" + "🔽"*25)
-        print("🔽 BAS SES TESTİ TAMAMLANDI! 🔽")
+        print("🔽 BASS VOICE TEST COMPLETED! 🔽")
     else:
         print("\n" + "🔼"*25)
-        print("🔼 TİZ SES TESTİ BAŞLIYOR! 🔼")
+        print("🔼 HIGH VOICE TEST STARTING! 🔼")
     
-    print(f"✅ Şu ana kadar {total_successful} nota başarıyla tespit edildi!")
+    print(f"✅ {total_successful} notes successfully detected so far!")
     
-    if direction == "tiz":
-        print("🎯 Şimdi tiz sesler test edilecek...")
-        print("💡 Yüksek notalar için:")
-        print("   🎵 Sesizi daha ince ve hafif tutun")
-        print("   💨 Nefes kontrolünüze dikkat edin")
-        print("   😌 Gergin olmamaya çalışın")
+    if direction == "treble":
+        print("🎯 Now testing high notes...")
+        print("💡 For high notes:")
+        print("   🎵 Keep your voice lighter and thinner")
+        print("   💨 Pay attention to breath control")
+        print("   😌 Try not to be tense")
     
-    print("🔽🔼" * 12 if direction == "bas" else "🔼🔽" * 12)
+    print("🔽🔼" * 12 if direction == "bass" else "🔼🔽" * 12)
 
 def print_final_summary(all_results: list, choice: str) -> None:
-    """Final özet ekranı."""
+    """Final summary screen."""
     print("\n" + "🏁"*30)
-    print("🏁 TEST TAMAMLANDI! 🏁")
+    print("🏁 TEST COMPLETED! 🏁")
     print("="*80)
     
     if not all_results:
-        print("😞 Maalesef hiç nota tespit edilemedi.")
-        print("💡 Öneriler:")
-        print("   🔊 Ses seviyenizi artırın")
-        print("   🎤 Mikrofon ayarlarınızı kontrol edin")
-        print("   🎵 Daha net konuşmaya çalışın")
+        print("😞 Unfortunately, no notes were detected.")
+        print("💡 Suggestions:")
+        print("   🔊 Increase your volume")
+        print("   🎤 Check your microphone settings")
+        print("   🎵 Try to speak more clearly")
         return
     
-    # Başarılı notalar listesi
+    # List of successful notes
     note_names = [nota for nota, _, _ in all_results]
     frequencies = [freq for _, freq, _ in all_results]
     
-    print(f"🎊 TEBRİKLER! {len(all_results)} nota başarıyla tespit edildi!")
-    print(f"🎼 Tespit edilen notalar: {' → '.join(note_names)}")
-    print(f"📏 Frekans aralığı: {min(frequencies):.1f} Hz - {max(frequencies):.1f} Hz")
-    print(f"📐 Toplam ses aralığı genişliği: {max(frequencies) - min(frequencies):.1f} Hz")
+    print(f"🎊 CONGRATULATIONS! {len(all_results)} notes successfully detected!")
+    print(f"🎼 Detected notes: {' → '.join(note_names)}")
+    print(f"📏 Frequency range: {min(frequencies):.1f} Hz - {max(frequencies):.1f} Hz")
+    print(f"📐 Total vocal range width: {max(frequencies) - min(frequencies):.1f} Hz")
     
-    # Aralık değerlendirmesi
+    # Range evaluation
     range_width = max(frequencies) - min(frequencies)
     if range_width > 200:
-        print("🏆 OLAĞANÜSTÜ! Çok geniş bir ses aralığınız var!")
+        print("🏆 EXTRAORDINARY! You have a very wide vocal range!")
     elif range_width > 150:
-        print("⭐ HARIKA! İyi bir ses aralığınız var!")
+        print("⭐ GREAT! You have a good vocal range!")
     elif range_width > 100:
-        print("👍 İYİ! Ortalama bir ses aralığınız var!")
+        print("👍 GOOD! You have an average vocal range!")
     else:
-        print("📈 Ses aralığınızı geliştirebilirsiniz!")
+        print("📈 You can improve your vocal range!")
     
-    print("\n📊 Detaylı analiz aşağıda sunulmaktadır...")
+    print("\n📊 Detailed analysis is presented below...")
     print("🏁" + "="*78 + "🏁")
 
 def main() -> None:
-    """Ana program akışı."""
+    """Main program flow."""
+    # Initialize database
+    init_database()
+    
     print_welcome_screen()
     
-    # Mikrofon seçimi
-    print("🎤 MİKROFON AYARLARI")
+    # Get user information
+    first_name, last_name = get_user_information()
+    
+    # Microphone selection
+    print("\n🎤 MICROPHONE SETTINGS")
     print("─"*40)
     list_and_select_microphone()
     
-    # Cinsiyet seçimi
-    print("\n🚻 CİNSİYET SEÇİMİ")
+    # Gender selection
+    print("\n🚻 GENDER SELECTION")
     print("─"*40)
-    print("👨 Erkek (e) - Do3 (130.81 Hz) referans notas ile başlar")
-    print("👩 Kadın (k) - Do4 (261.63 Hz) referans notas ile başlar")
-    choice = input("\n🎯 Lütfen seçiminizi yapın (e/k): ").strip().lower()
+    print("👨 Male (m) - Starts with C3 (130.81 Hz) reference note")
+    print("👩 Female (f) - Starts with C4 (261.63 Hz) reference note")
+    choice = input("\n🎯 Please make your selection (m/f): ").strip().lower()
 
-    if choice == "e":
-        print("\n👨 ERKEK SES TESTİ SEÇİLDİ")
-        print("🎼 Referans nota: Do3 (130.81 Hz)")
+    if choice == "m":
+        gender = "erkek"
+        print("\n👨 MALE VOICE TEST SELECTED")
+        print("🎼 Reference note: C3 (130.81 Hz)")
         start_note = ("C3", 130.81)
-    elif choice == "k":
-        print("\n👩 KADIN SES TESTİ SEÇİLDİ")
-        print("🎼 Referans nota: Do4 (261.63 Hz)")
+    elif choice == "f":
+        gender = "kadın"
+        print("\n👩 FEMALE VOICE TEST SELECTED")
+        print("🎼 Reference note: C4 (261.63 Hz)")
         start_note = ("C4", 261.63)
     else:
-        print("❌ Geçersiz seçim. Program sonlanıyor.")
+        print("❌ Invalid selection. Program terminating.")
         return
 
-    print("\n🚀 TEST BAŞLIYOR!")
+    # Save user to database
+    user_id = save_or_update_user(first_name, last_name, gender)
+    print(f"👤 Hello {first_name} {last_name}! You have been registered in the system.")
+
+    print("\n🚀 TEST STARTING!")
     print("="*50)
 
-    # Bas seslere doğru test
-    results_down = run_voice_test(start_note, direction=-1)
+    # Test towards bass notes
+    results_down, history_down = run_voice_test(start_note, direction=-1)
     
-    # Geçiş ekranı
-    print_test_transition("tiz", len(results_down))
+    # Transition screen
+    print_test_transition("treble", len(results_down))
     
-    # Tiz seslere doğru test
-    results_up = run_voice_test(start_note, direction=1)
+    # Test towards treble notes
+    results_up, history_up = run_voice_test(start_note, direction=1)
 
-    # Final özeti
+    # Final summary
     all_results = results_down + results_up
+    all_history = history_down + history_up
     print_final_summary(all_results, choice)
     
-    # Görsel analiz
+    # Save test results to database
+    if all_results:
+        test_result_id = save_test_results(user_id, all_results, gender, all_history)
+        
+        # Show personal statistics
+        show_personal_statistics(user_id)
+    
+    # Visual analysis
     frequencies = [freq for _, freq, _ in all_results]
     if frequencies:
         min_freq = min(frequencies)
         max_freq = max(frequencies)
         draw_voice_range(min_freq, max_freq, choice)
+    
+    # Show scoreboard and detailed history
+    print("\n🎯 ADDITIONAL REPORTS AND CS50 MERGE SORT")
+    print("─"*50)
+    print("1. Scoreboard (with CS50 Merge Sort) (s)")
+    print("2. Detailed test history (h)")
+    print("3. Database tables (d)")
+    print("4. CS50 Merge Sort algorithm info (a)")
+    print("5. Show all (t)")
+    print("6. Show none (n)")
+    
+    report_choice = input("\nMake your selection: ").strip().lower()
+    
+    if report_choice in ['s', 't']:
+        show_scoreboard()
+    
+    if report_choice in ['h', 't'] and all_results:
+        show_test_history(user_id)
+    
+    if report_choice in ['d', 't']:
+        show_database_tables()
+    
+    if report_choice in ['a', 't']:
+        show_merge_sort_info()
 
 if __name__ == "__main__":
     main() 

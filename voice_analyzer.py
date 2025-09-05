@@ -155,83 +155,85 @@ def get_octave_info(frequency: float) -> str:
     octave_number = 4 + octave_difference
     
     if octave_number < 2:
-        return "Çok Düşük Oktav"
+        return "Very Low Octave"
     elif octave_number < 3:
-        return "2. Oktav"
+        return "2nd Octave"
     elif octave_number < 4:
-        return "3. Oktav"
+        return "3rd Octave"
     elif octave_number < 5:
-        return "4. Oktav"
+        return "4th Octave"
     elif octave_number < 6:
-        return "5. Oktav"
+        return "5th Octave"
     elif octave_number < 7:
-        return "6. Oktav"
+        return "6th Octave"
     else:
-        return "Çok Yüksek Oktav"
+        return "Very High Octave"
 
 def print_success_visual(nota: str, success_rate: float, dominant_freq: float) -> None:
-    """Başarılı nota için görsel gösterim."""
-    # Başarı oranına göre mesaj
+    """Visual display for successful notes."""
+    # Message based on success rate
     if success_rate >= 95:
-        status_msg = "🏆 MÜKEMMEL!"
+        status_msg = "🏆 PERFECT!"
     elif success_rate >= 90:
-        status_msg = "⭐ HARIKA!"
+        status_msg = "⭐ GREAT!"
     elif success_rate >= 85:
-        status_msg = "👍 ÇOK İYİ!"
+        status_msg = "👍 VERY GOOD!"
     else:
-        status_msg = "✅ İYİ!"
+        status_msg = "✅ GOOD!"
     
-    # Oktav bilgisi
+    # Octave information
     octave_info = get_octave_info(dominant_freq)
     
-    # Başarı çubuğu (daha kısa)
+    # Success bar (shorter)
     bar_length = 20
     filled_length = int(bar_length * success_rate / 100)
     bar = "█" * filled_length + "░" * (bar_length - filled_length)
     
-    print(f"\n🎵 BAŞARILI! {nota} | {dominant_freq:.1f} Hz ({octave_info}) | [{bar}] %{success_rate:.1f} | {status_msg}")
+    print(f"\n🎵 SUCCESS! {nota} | {dominant_freq:.1f} Hz ({octave_info}) | [{bar}] %{success_rate:.1f} | {status_msg}")
     print("─" * 80)
 
 def print_failure_visual(nota: str, success_rate: float, dominant_freq: float, target_freq: float, attempts: int, max_attempts: int) -> None:
-    """Başarısız deneme için görsel gösterim."""
-    # Oktav bilgisi
+    """Visual display for failed attempts."""
+    # Octave information
     octave_info = get_octave_info(dominant_freq)
     
-    # Motivasyon mesajı
+    # Motivational message
     if success_rate < 20:
-        tip = "💡 Notayı daha net söyleyin"
+        tip = "💡 Sing the note more clearly"
     elif success_rate < 50:
-        tip = "💡 Yavaş ve dikkatli söyleyin"
+        tip = "💡 Sing slowly and carefully"
     else:
-        tip = "💡 Çok yakın! Tekrar deneyin"
+        tip = "💡 Very close! Try again"
     
-    # Hata çubuğu
+    # Error bar
     bar_length = 15
     filled_length = int(bar_length * success_rate / 100)
     bar = "█" * filled_length + "░" * (bar_length - filled_length)
     
     if attempts < max_attempts:
-        remaining = f"| {max_attempts - attempts} deneme kaldı"
+        remaining = f"| {max_attempts - attempts} attempts left"
     else:
-        remaining = "| Son deneme"
+        remaining = "| Last attempt"
     
-    print(f"\n❌ BAŞARISIZ: {nota} | Hedef: {target_freq:.1f} Hz | Algılanan: {dominant_freq:.1f} Hz ({octave_info})")
+    print(f"\n❌ FAILED: {nota} | Target: {target_freq:.1f} Hz | Detected: {dominant_freq:.1f} Hz ({octave_info})")
     print(f"📊 [{bar}] %{success_rate:.1f} {remaining} {tip}")
     print("─" * 80)
 
 def print_low_volume_warning() -> None:
-    """Düşük ses seviyesi uyarısı."""
-    print("\n🔇 SES SEVİYESİ DÜŞÜK! | Mikrofona yaklaşın ve sesizi yükseltin | 💡 Daha net konuşun")
+    """Low volume warning."""
+    print("\n🔇 VOLUME TOO LOW! | Move closer to microphone and speak louder | 💡 Speak more clearly")
     print("─" * 80)
 
-def run_voice_test(start_note: Tuple[str, float], direction: int) -> List[Tuple[str, float, str]]:
-    """Ses testi yapar ve sonuçları döndürür."""
+def run_voice_test(start_note: Tuple[str, float], direction: int) -> Tuple[List[Tuple[str, float, str]], List[dict]]:
+    """Performs voice test and returns results + detailed history."""
     detected_ranges = []
+    test_history = []
     index = NOTE_FREQUENCIES.index(start_note)
     successful_notes = []
     
-    direction_text = "🔽 BAS" if direction == -1 else "🔼 TİZ"
-    print(f"\n🎵 {direction_text} SES TESTİ BAŞLIYOR 🎵")
+    direction_text = "🔽 BASS" if direction == -1 else "🔼 TREBLE"
+    test_direction = "down" if direction == -1 else "up"
+    print(f"\n🎵 {direction_text} VOICE TEST STARTING 🎵")
     print("="*50)
 
     while 0 <= index < len(NOTE_FREQUENCIES):
@@ -239,45 +241,74 @@ def run_voice_test(start_note: Tuple[str, float], direction: int) -> List[Tuple[
         turkce_nota = nota_cevirici(note)
         attempts = 0
 
-        print(f"\n🎼 SIRADA: {turkce_nota} ({frequency:.2f} Hz)")
-        print("🎹 Referans nota çalınıyor...")
+        print(f"\n🎼 UP NEXT: {turkce_nota} ({frequency:.2f} Hz)")
+        print("🎹 Playing reference note...")
         
         while attempts < MAX_ATTEMPTS:
+            attempts += 1
             play_note(frequency, NOTE_DURATION, waveform="piano")
 
             audio_data = record_audio(NOTE_DURATION, SAMPLE_RATE)
             dominant_freq = dominant_frequency(audio_data, SAMPLE_RATE)
             voice_range = identify_voice_range(dominant_freq)
             success_rate = calculate_success_percentage(frequency, dominant_freq, ACCEPTABLE_MARGIN)
+            
+            # Calculate octave
+            import math
+            if dominant_freq > 0:
+                octave_number = int(math.log2(dominant_freq / 440) * 12 / 12) + 4
+            else:
+                octave_number = None
 
             signal_power = np.mean(np.abs(audio_data))
             if signal_power < 0.01:
                 print_low_volume_warning()
-                attempts += 1
+                # Düşük ses seviyesi için geçmiş kaydı
+                test_history.append({
+                    'note_name': note,
+                    'target_frequency': frequency,
+                    'detected_frequency': None,
+                    'octave_number': None,
+                    'accuracy_percentage': 0.0,
+                    'attempt_number': attempts,
+                    'is_successful': False,
+                    'test_direction': test_direction
+                })
                 if attempts >= MAX_ATTEMPTS:
-                    print(f"\n❌ {MAX_ATTEMPTS} deneme sonunda yeterli ses seviyesine ulaşılamadı.")
-                    print("🎯 Test sona eriyor...")
-                    return detected_ranges
+                    print(f"\n❌ Sufficient volume level could not be reached after {MAX_ATTEMPTS} attempts.")
+                    print("🎯 Test ending...")
+                    return detected_ranges, test_history
                 continue
+
+            # Save to test history
+            test_history.append({
+                'note_name': note,
+                'target_frequency': frequency,
+                'detected_frequency': dominant_freq,
+                'octave_number': octave_number,
+                'accuracy_percentage': success_rate,
+                'attempt_number': attempts,
+                'is_successful': success_rate >= MIN_SUCCESS_RATE,
+                'test_direction': test_direction
+            })
 
             if success_rate >= MIN_SUCCESS_RATE:
                 print_success_visual(turkce_nota, success_rate, dominant_freq)
                 detected_ranges.append((turkce_nota, dominant_freq, voice_range))
                 successful_notes.append(turkce_nota)
                 
-                # Başarılı notalar listesi
+                # List of successful notes
                 if len(successful_notes) > 1:
-                    print(f"\n🏆 BAŞARILI NOTALAR: {' → '.join(successful_notes)}")
+                    print(f"\n🏆 SUCCESSFUL NOTES: {' → '.join(successful_notes)}")
                 
                 index += direction
                 break
             else:
-                attempts += 1
                 print_failure_visual(turkce_nota, success_rate, dominant_freq, frequency, attempts, MAX_ATTEMPTS)
                 
                 if attempts >= MAX_ATTEMPTS:
-                    print(f"\n🏁 {turkce_nota} notası için test tamamlandı.")
-                    print("🎯 Bir sonraki teste geçiliyor...")
-                    return detected_ranges
+                    print(f"\n🏁 Test completed for {turkce_nota} note.")
+                    print("🎯 Moving to next test...")
+                    return detected_ranges, test_history
 
-    return detected_ranges 
+    return detected_ranges, test_history 
