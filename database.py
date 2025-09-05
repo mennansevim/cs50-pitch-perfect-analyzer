@@ -629,3 +629,75 @@ def show_merge_sort_info() -> None:
     print("• Composite scoring: 60% range + 30% octaves + 10% notes")
     
     print("="*70)
+
+def restore_default_database():
+    """Restore database to default state by clearing all user data."""
+    print("\n" + "="*70)
+    print("🔄 DATABASE RESTORE TO DEFAULT")
+    print("="*70)
+    
+    # Confirmation prompt
+    print("⚠️  WARNING: This will delete ALL user data!")
+    print("   • All users will be removed")
+    print("   • All test results will be deleted") 
+    print("   • All test history will be cleared")
+    print("   • Voice types will be reset to defaults")
+    
+    confirm = input("\n❓ Are you sure you want to continue? (yes/no): ").strip().lower()
+    
+    if confirm not in ['yes', 'y']:
+        print("❌ Restore operation cancelled.")
+        return
+    
+    try:
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            
+            print("\n🗑️  Clearing all tables...")
+            
+            # Clear all user data tables (order matters due to foreign keys)
+            cursor.execute("DELETE FROM voice_analyzer_history")
+            print("   ✅ voice_analyzer_history cleared")
+            
+            cursor.execute("DELETE FROM test_results") 
+            print("   ✅ test_results cleared")
+            
+            cursor.execute("DELETE FROM users")
+            print("   ✅ users cleared")
+            
+            cursor.execute("DELETE FROM voice_types")
+            print("   ✅ voice_types cleared")
+            
+            # Reset auto-increment counters
+            cursor.execute("DELETE FROM sqlite_sequence")
+            print("   ✅ Auto-increment counters reset")
+            
+            conn.commit()
+            
+            print("\n🔄 Reinitializing default voice types...")
+            # Reinitialize voice types with default data
+            voice_types_data = [
+                ('Bass', 'male', 82.41, 329.63, 'Lowest male voice type'),
+                ('Baritone', 'male', 98.00, 392.00, 'Middle male voice type'),
+                ('Tenor', 'male', 130.81, 523.25, 'Highest male voice type'),
+                ('Contralto', 'female', 164.81, 659.26, 'Lowest female voice type'),
+                ('Mezzo-soprano', 'female', 196.00, 783.99, 'Middle female voice type'),
+                ('Soprano', 'female', 261.63, 1046.50, 'Highest female voice type')
+            ]
+            
+            cursor.executemany("""
+                INSERT OR IGNORE INTO voice_types (type_name, gender, min_frequency, max_frequency, description)
+                VALUES (?, ?, ?, ?, ?)
+            """, voice_types_data)
+            
+            conn.commit()
+            
+            print("\n✅ DATABASE SUCCESSFULLY RESTORED TO DEFAULT!")
+            print("🎯 All user data cleared, ready for fresh start.")
+            
+    except sqlite3.Error as e:
+        print(f"❌ Database error during restore: {e}")
+    except Exception as e:
+        print(f"❌ Unexpected error during restore: {e}")
+    
+    print("="*70)

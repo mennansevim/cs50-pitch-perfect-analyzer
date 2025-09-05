@@ -10,7 +10,8 @@ from database import (
     show_personal_statistics,
     show_test_history,
     show_database_tables,
-    show_merge_sort_info
+    show_merge_sort_info,
+    restore_default_database
 )
 
 def print_welcome_screen() -> None:
@@ -97,6 +98,23 @@ def print_final_summary(all_results: list, choice: str) -> None:
     print("\n📊 Detailed analysis is presented below...")
     print("🏁" + "="*78 + "🏁")
 
+def show_main_menu() -> str:
+    """Shows main menu and returns user choice."""
+    print("\n🎛️  MAIN MENU")
+    print("─"*50)
+    print("1. 🎤 Start Voice Test (t)")
+    print("2. 🏆 View Top 10 Scoreboard (s)")
+    print("3. 🗄️  View Database Tables (d)")
+    print("4. 🎓 CS50 Merge Sort Info (a)")
+    print("5. 🔄 Restore Database to Default (r)")
+    print("6. 🚪 Exit (q)")
+    
+    while True:
+        choice = input("\n🎯 Select an option (1-6 or letter): ").strip().lower()
+        if choice in ['1', 't', '2', 's', '3', 'd', '4', 'a', '5', 'r', '6', 'q']:
+            return choice
+        print("❌ Invalid selection. Please choose 1-6 or corresponding letter.")
+
 def main() -> None:
     """Main program flow."""
     # Initialize database
@@ -104,6 +122,33 @@ def main() -> None:
     
     print_welcome_screen()
     
+    # Show main menu
+    while True:
+        choice = show_main_menu()
+        
+        if choice in ['6', 'q']:
+            print("\n👋 Thank you for using CS50 Pitch Perfect Analyzer!")
+            print("🎵 Keep practicing your voice! 🎵")
+            return
+        elif choice in ['2', 's']:
+            show_scoreboard()
+            input("\n⏸️  Press Enter to continue...")
+            continue
+        elif choice in ['3', 'd']:
+            show_database_tables()
+            input("\n⏸️  Press Enter to continue...")
+            continue
+        elif choice in ['4', 'a']:
+            show_merge_sort_info()
+            input("\n⏸️  Press Enter to continue...")
+            continue
+        elif choice in ['5', 'r']:
+            restore_default_database()
+            input("\n⏸️  Press Enter to continue...")
+            continue
+        elif choice in ['1', 't']:
+            break  # Continue to voice test
+        
     # Get user information
     first_name, last_name = get_user_information()
     
@@ -176,7 +221,8 @@ def main() -> None:
     print("3. Database tables (d)")
     print("4. CS50 Merge Sort algorithm info (a)")
     print("5. Show all (t)")
-    print("6. Show none (n)")
+    print("6. Restore database to default (r)")
+    print("7. Show none (n)")
     
     report_choice = input("\nMake your selection: ").strip().lower()
     
@@ -191,6 +237,9 @@ def main() -> None:
     
     if report_choice in ['a', 't']:
         show_merge_sort_info()
+    
+    if report_choice == 'r':
+        restore_default_database()
 
 if __name__ == "__main__":
     main() 

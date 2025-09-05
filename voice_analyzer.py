@@ -263,20 +263,21 @@ def run_voice_test(start_note: Tuple[str, float], direction: int) -> Tuple[List[
             signal_power = np.mean(np.abs(audio_data))
             if signal_power < 0.01:
                 print_low_volume_warning()
-                # Düşük ses seviyesi için geçmiş kaydı
-                test_history.append({
-                    'note_name': note,
-                    'target_frequency': frequency,
-                    'detected_frequency': None,
-                    'octave_number': None,
-                    'accuracy_percentage': 0.0,
-                    'attempt_number': attempts,
-                    'is_successful': False,
-                    'test_direction': test_direction
-                })
+                # Don't record low volume attempts in test history
                 if attempts >= MAX_ATTEMPTS:
                     print(f"\n❌ Sufficient volume level could not be reached after {MAX_ATTEMPTS} attempts.")
                     print("🎯 Test ending...")
+                    # Only record final failed attempt when all attempts fail due to low volume
+                    test_history.append({
+                        'note_name': note,
+                        'target_frequency': frequency,
+                        'detected_frequency': 0,
+                        'octave_number': 0,
+                        'accuracy_percentage': 0.0,
+                        'attempt_number': attempts,
+                        'is_successful': False,
+                        'test_direction': test_direction
+                    })
                     return detected_ranges, test_history
                 continue
 
