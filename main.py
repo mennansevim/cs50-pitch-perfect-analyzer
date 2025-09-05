@@ -10,9 +10,10 @@ from database import (
     show_personal_statistics,
     show_test_history,
     show_database_tables,
-    show_merge_sort_info,
-    restore_default_database
+    restore_default_database,
+    find_best_voice_type
 )
+from song_recommender import display_song_recommendations
 
 def print_welcome_screen() -> None:
     """Welcome screen."""
@@ -105,15 +106,14 @@ def show_main_menu() -> str:
     print("1. 🎤 Start Voice Test (t)")
     print("2. 🏆 View Top 10 Scoreboard (s)")
     print("3. 🗄️  View Database Tables (d)")
-    print("4. 🎓 CS50 Merge Sort Info (a)")
-    print("5. 🔄 Restore Database to Default (r)")
-    print("6. 🚪 Exit (q)")
+    print("4. 🔄 Restore Database to Default (r)")
+    print("5. 🚪 Exit (q)")
     
     while True:
-        choice = input("\n🎯 Select an option (1-6 or letter): ").strip().lower()
-        if choice in ['1', 't', '2', 's', '3', 'd', '4', 'a', '5', 'r', '6', 'q']:
+        choice = input("\n🎯 Select an option (1-5 or letter): ").strip().lower()
+        if choice in ['1', 't', '2', 's', '3', 'd', '4', 'r', '5', 'q']:
             return choice
-        print("❌ Invalid selection. Please choose 1-6 or corresponding letter.")
+        print("❌ Invalid selection. Please choose 1-5 or corresponding letter.")
 
 def main() -> None:
     """Main program flow."""
@@ -126,7 +126,7 @@ def main() -> None:
     while True:
         choice = show_main_menu()
         
-        if choice in ['6', 'q']:
+        if choice in ['5', 'q']:
             print("\n👋 Thank you for using CS50 Pitch Perfect Analyzer!")
             print("🎵 Keep practicing your voice! 🎵")
             return
@@ -138,11 +138,7 @@ def main() -> None:
             show_database_tables()
             input("\n⏸️  Press Enter to continue...")
             continue
-        elif choice in ['4', 'a']:
-            show_merge_sort_info()
-            input("\n⏸️  Press Enter to continue...")
-            continue
-        elif choice in ['5', 'r']:
+        elif choice in ['4', 'r']:
             restore_default_database()
             input("\n⏸️  Press Enter to continue...")
             continue
@@ -214,32 +210,74 @@ def main() -> None:
         draw_voice_range(min_freq, max_freq, choice)
     
     # Show scoreboard and detailed history
-    print("\n🎯 ADDITIONAL REPORTS AND CS50 MERGE SORT")
+    print("\n🎯 ADDITIONAL REPORTS AND OPTIONS")
     print("─"*50)
     print("1. Scoreboard (with CS50 Merge Sort) (s)")
     print("2. Detailed test history (h)")
     print("3. Database tables (d)")
-    print("4. CS50 Merge Sort algorithm info (a)")
+    print("4. Song recommendations for your voice (songs)")
     print("5. Show all (t)")
     print("6. Restore database to default (r)")
-    print("7. Show none (n)")
+    print("7. 🚪 Exit application (exit)")
     
-    report_choice = input("\nMake your selection: ").strip().lower()
-    
-    if report_choice in ['s', 't']:
-        show_scoreboard()
-    
-    if report_choice in ['h', 't'] and all_results:
-        show_test_history(user_id)
-    
-    if report_choice in ['d', 't']:
-        show_database_tables()
-    
-    if report_choice in ['a', 't']:
-        show_merge_sort_info()
-    
-    if report_choice == 'r':
-        restore_default_database()
+    while True:
+        report_choice = input("\nMake your selection: ").strip().lower()
+        
+        # Exit option
+        if report_choice in ['7', 'exit', 'q', 'quit']:
+            print("\n🎵 Thank you for using CS50 Pitch Perfect Analyzer! 🎵")
+            print("👋 Goodbye!")
+            break
+        
+        # Menu options
+        if report_choice in ['1', 's']:
+            show_scoreboard()
+        
+        elif report_choice in ['2', 'h'] and all_results:
+            show_test_history(user_id)
+        
+        elif report_choice in ['3', 'd']:
+            show_database_tables()
+        
+        elif report_choice in ['4', 'songs'] and frequencies:
+            # Get user's voice type for better recommendations
+            best_voice_type_id, percentage, voice_groups = find_best_voice_type(min_freq, max_freq, choice.lower())
+            voice_type = voice_groups.split(",")[0] if voice_groups else "Unknown"
+            
+            print("\n" + "="*60)
+            display_song_recommendations(min_freq, max_freq, voice_type)
+        
+        elif report_choice in ['5', 't']:
+            # Show all reports
+            print("\n" + "🎯 SHOWING ALL REPORTS" + "\n" + "="*50)
+            show_scoreboard()
+            if all_results:
+                show_test_history(user_id)
+            show_database_tables()
+            if frequencies:
+                best_voice_type_id, percentage, voice_groups = find_best_voice_type(min_freq, max_freq, choice.lower())
+                voice_type = voice_groups.split(",")[0] if voice_groups else "Unknown"
+                print("\n" + "="*60)
+                display_song_recommendations(min_freq, max_freq, voice_type)
+        
+        elif report_choice in ['6', 'r']:
+            restore_default_database()
+        
+        else:
+            print("❌ Invalid selection. Please choose 1-7 or corresponding letter.")
+        
+        # Show menu again for next selection (except exit)
+        if report_choice not in ['7', 'exit', 'q', 'quit']:
+            print("\n" + "─"*50)
+            print("🎯 ADDITIONAL REPORTS AND OPTIONS")
+            print("─"*50)
+            print("1. Scoreboard (with CS50 Merge Sort) (s)")
+            print("2. Detailed test history (h)")
+            print("3. Database tables (d)")
+            print("4. Song recommendations for your voice (songs)")
+            print("5. Show all (t)")
+            print("6. Restore database to default (r)")
+            print("7. 🚪 Exit application (exit)")
 
 if __name__ == "__main__":
     main() 

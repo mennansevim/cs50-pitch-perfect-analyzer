@@ -593,43 +593,6 @@ def show_database_tables() -> None:
         
         print("="*80)
 
-def show_merge_sort_info() -> None:
-    """Show information about CS50 Merge Sort algorithm (educational purpose)."""
-    print("\n" + "="*70)
-    print("🎓                    CS50 MERGE SORT ALGORITHM                    🎓")
-    print("="*70)
-    
-    print("\n📚 ALGORITHM OVERVIEW:")
-    print("┌────────────────────────────────────────────────────────────────┐")
-    print("│ Merge Sort is a divide-and-conquer algorithm that:               │")
-    print("│ • Divides the array into two halves                             │")
-    print("│ • Recursively sorts both halves                                 │")
-    print("│ • Merges the sorted halves back together                        │")
-    print("└────────────────────────────────────────────────────────────────┘")
-    
-    print("\n⚡ PERFORMANCE CHARACTERISTICS:")
-    print("┌─────────────────┬─────────────────────────────────────────────┐")
-    print("│ Time Complexity │ O(n log n) - Guaranteed for all cases      │")
-    print("│ Space Complexity│ O(n) - Requires additional memory          │")
-    print("│ Stability       │ Stable - Maintains relative order          │")
-    print("│ Best Case       │ O(n log n)                                  │")
-    print("│ Average Case    │ O(n log n)                                  │")
-    print("│ Worst Case      │ O(n log n)                                  │")
-    print("└─────────────────┴─────────────────────────────────────────────┘")
-    
-    print("\n🎯 WHY MERGE SORT FOR SCOREBOARD?")
-    print("• Consistent O(n log n) performance regardless of data order")
-    print("• Stable sorting preserves order of equal scores")
-    print("• Predictable behavior - no worst-case performance issues")
-    print("• Perfect for educational demonstration of divide-and-conquer")
-    
-    print("\n🔍 CS50 IMPLEMENTATION DETAILS:")
-    print("• Uses recursive divide-and-conquer approach")
-    print("• Merges subarrays in descending order for top scores")
-    print("• Composite scoring: 60% range + 30% octaves + 10% notes")
-    
-    print("="*70)
-
 def restore_default_database():
     """Restore database to default state by clearing all user data."""
     print("\n" + "="*70)

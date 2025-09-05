@@ -70,18 +70,26 @@ The essence of this work remains my own, with AI tools serving as productivity a
 - **SQLite Database Integration**: Persistent data storage for users and test results
 - **Scoreboard System**: Top 10 rankings based on vocal range width and octave span
 - **Personal Statistics**: Individual performance tracking and historical data
+- **🆕 Smart Song Recommendations**: AI-powered song suggestions based on your vocal range
+- **🆕 Professional Piano Audio**: Authentic Kawai CN201 digital piano recordings for reference notes
+- **🆕 Intelligent Difficulty Assessment**: Automatic song difficulty rating based on your capabilities
 
 ### 🎼 Technical Highlights
 - **Harmonic Analysis Algorithm**: Prevents false harmonics detection (e.g., 494 Hz instead of 164 Hz)
 - **Fundamental Frequency Extraction**: Advanced FFT with peak detection and harmonic validation
 - **Oktav Calculation**: Logarithmic octave detection based on A4=440Hz reference
 - **Real-time Audio Processing**: Live microphone input with noise filtering
+- **🆕 Vocal Range Matching**: Smart algorithm calculates percentage overlap between user range and song requirements
+- **🆕 Genre-Based Filtering**: Categorized song recommendations by musical genre (Pop, Rock, Folk, R&B, etc.)
+- **🆕 Multi-Octave Recognition**: Detects and handles octave variations in user singing
 
 ### 🎨 User Experience
 - **Interactive CLI**: Beautiful terminal-based interface with emojis and progress bars
 - **Multi-language Support**: English interface with international terminology
 - **Visual Feedback**: Success/failure indicators with motivational messages
 - **Detailed Analytics**: Comprehensive voice analysis with percentage matching
+- **🆕 Personalized Song Suggestions**: Get song recommendations perfectly matched to your vocal capabilities
+- **🆕 Professional Audio Quality**: High-quality piano reference notes with anti-pop processing
 
 ## 🚀 Installation
 
@@ -119,6 +127,13 @@ python main.py
 - Voice type classification with confidence percentages
 - Comprehensive analysis and recommendations
 
+### 5. **🆕 Smart Song Recommendations**
+- Personalized song suggestions based on your detected vocal range
+- Intelligent difficulty assessment (Very Easy to Expert)
+- Genre-based categorization (Pop, Rock, Folk, R&B, Traditional)
+- Percentage compatibility matching for each song
+- Note range visualization for easy comparison
+
 ## 🔬 Technical Architecture
 
 ### Core Algorithms
@@ -142,8 +157,23 @@ voice_percentages = calculate_voice_type_percentages(min_freq, max_freq, gender)
 # Intelligent overlap analysis between user range and standard voice types
 ```
 
+#### **🆕 Song Recommendation Algorithm**
+```python
+def calculate_vocal_range_coverage(song_min, song_max, user_min, user_max):
+    # Smart overlap calculation between song requirements and user capabilities
+    # Returns percentage compatibility (70%+ recommended for matching)
+```
+
+#### **🆕 Difficulty Assessment**
+```python
+def get_difficulty_score(song, user_range_hz):
+    # Analyzes song range relative to user's vocal capabilities
+    # Categorizes as: Very Easy, Easy, Medium, Hard, Very Hard
+```
+
 ## 📊 Sample Output
 
+### Voice Analysis Results
 ```
 🎤============================================================🎤
 🎵                  CS50 PITCH PERFECT ANALYZER                🎵
@@ -154,6 +184,29 @@ voice_percentages = calculate_voice_type_percentages(min_freq, max_freq, gender)
 🎵 SUCCESS! D3 | 146.5 Hz (2nd Octave) | [███████████████████░] 99.6% | 🏆 PERFECT!
 
 🎯 RESULT: 🏆 'Bass' (93.5% compatibility - Perfect match!)
+```
+
+### 🆕 Song Recommendations Output
+```
+🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵
+🎤                    RECOMMENDED SONGS FOR YOUR VOICE                    🎤
+🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵
+
+🎼 Your vocal range: C3 (130.8 Hz) - C5 (523.3 Hz)
+🎭 Voice type: Tenor
+📏 Range width: 392.5 Hz
+
+🎵 1. Let It Be - The Beatles
+    🎼 Range: D3 - C5 (146.8Hz - 523.3Hz)
+    📊 Voice match: 95.2%
+    🟡 Difficulty: Easy
+    🎭 Genre: Pop
+
+🎵 2. Imagine - John Lennon
+    🎼 Range: C3 - A4 (130.8Hz - 440.0Hz)
+    📊 Voice match: 88.7%
+    🟢 Difficulty: Very Easy
+    🎭 Genre: Pop
 ```
 
 ## 🎼 Voice Types Supported
@@ -258,6 +311,13 @@ Each file in this project serves a specific purpose in the overall voice analysi
 - Visualization parameters and user interface constants
 - Makes the system easily configurable without code changes
 
+**`song_recommender.py`** - 🆕 Intelligent Song Recommendation Engine
+- Smart vocal range matching algorithm with percentage overlap calculation
+- Comprehensive song database with frequency ranges and difficulty levels
+- Genre-based categorization and filtering system
+- Automatic difficulty assessment based on user's vocal capabilities
+- Beautiful terminal output with song recommendations and compatibility ratings
+
 ### 🎵 Audio Assets
 
 **`sounds/piano/`** - Reference Audio Files
@@ -316,6 +376,7 @@ cs50-pitch-perfect-analyzer/
 ├── database.py         # SQLite database operations and scoreboard
 ├── models.py           # Voice ranges and note frequency definitions
 ├── config.py           # Configuration parameters
+├── song_recommender.py  # 🆕 Intelligent song recommendation system
 ├── requirements.txt    # Python dependencies
 ├── pitch_perfect.db    # SQLite database (auto-created)
 ├── sounds/piano/       # Piano reference recordings (29 WAV files)
@@ -339,7 +400,8 @@ Run the application and follow the interactive prompts:
 3. **Choose Gender**: Male (C3 start) or Female (C4 start)  
 4. **Sing Notes**: Follow audio cues and sing back the reference notes
 5. **View Results**: Comprehensive analysis with visual charts and personal statistics
-6. **Check Scoreboard**: See top 10 rankings and compare with other users
+6. **🆕 Get Song Recommendations**: Receive personalized song suggestions based on your vocal range
+7. **Check Scoreboard**: See top 10 rankings and compare with other users
 
 ## 🚀 Future Enhancements
 
@@ -348,6 +410,10 @@ Run the application and follow the interactive prompts:
 - [ ] **Machine Learning**: Neural network-based pitch detection
 - [ ] **Multi-language**: Additional language support
 - [ ] **Cloud Storage**: Save and compare results over time
+- [ ] **🆕 Expanded Song Database**: Integration with Spotify/Apple Music APIs for larger song selection
+- [ ] **🆕 Custom Playlist Export**: Export recommended songs to Spotify or Apple Music playlists
+- [ ] **🆕 Vocal Training Mode**: Guided exercises to expand vocal range based on song requirements
+- [ ] **🆕 Performance Tracking**: Track improvement over time with difficulty progression suggestions
 
 ## 📜 License
 

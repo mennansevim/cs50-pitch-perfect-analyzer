@@ -61,16 +61,14 @@ def play_note(frequency: float, duration: float = 2, waveform: str = "piano") ->
                 fade_duration = min(50, len(audio) // 4)  # 50ms veya ses uzunluğunun 1/4'ü
                 audio = audio.fade_in(fade_duration).fade_out(fade_duration)
                 
-                print(f"🎹 {note_name} notası çalınıyor (WAV dosyası)...")
+                print(f"🎹 {note_name} playing...")
                 play(audio)
                 return  # ÖNEMLİ: WAV dosyası başarıyla çalındıysa fonksiyondan çık
             except Exception as e:
-                print(f"⚠️ WAV dosyası çalınırken hata: {e}")
-                print(f"Sentetik ses üretiliyor...")
+                print(f"⚠️ Error while playing WAV file: {e}")
                 # WAV hatası durumunda sentetik sese geç
         else:
             print(f"⚠️ {note_name} için WAV dosyası bulunamadı")
-            print(f"Sentetik ses üretiliyor...")
     
     # WAV dosyası bulunamazsa veya hata olursa sentetik ses üret
     print(f"🎵 {frequency:.1f} Hz frekansta sentetik piano sesi çalınıyor...")
