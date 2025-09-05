@@ -5,8 +5,8 @@ from visualization import draw_voice_range
 def print_welcome_screen() -> None:
     """Hoşgeldin ekranı."""
     print("🎤" + "="*60 + "🎤")
-    print("🎵" + " "*20 + "SES ARALIĞI TEST SİSTEMİ" + " "*20 + "🎵")
-    print("🎼" + " "*15 + "Voice Range Detection System v2.0" + " "*15 + "🎼")
+    print("🎵" + " "*18 + "CS50 PITCH PERFECT ANALYZER" + " "*18 + "🎵")
+    print("🎼" + " "*15 + "Advanced Voice Range Detection v2.0" + " "*14 + "🎼")
     print("🎤" + "="*60 + "🎤")
     print()
     print("📋 BU PROGRAM NE YAPAR?")

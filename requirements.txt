@@ -1,0 +1,13 @@
+# CS50 Pitch Perfect Analyzer - Dependencies
+
+# Core Scientific Computing
+numpy>=1.21.0
+scipy>=1.7.0
+
+# Audio Processing
+sounddevice>=0.4.0
+simpleaudio>=1.0.4
+
+# Optional: Development and Testing
+# pytest>=6.0.0
+# matplotlib>=3.3.0  # For future visualization enhancements
