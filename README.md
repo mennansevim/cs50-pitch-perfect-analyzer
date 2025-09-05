@@ -12,6 +12,9 @@
 - **Voice Type Classification**: Automatically determines your voice type (Soprano, Alto, Tenor, Bass)
 - **Octave Detection**: Real-time octave identification for each detected note
 - **Visual Progress Tracking**: Beautiful progress bars and success indicators
+- **SQLite Database Integration**: Persistent data storage for users and test results
+- **Scoreboard System**: Top 10 rankings based on vocal range width and octave span
+- **Personal Statistics**: Individual performance tracking and historical data
 
 ### 🎼 Technical Highlights
 - **Harmonic Analysis Algorithm**: Prevents false harmonics detection (e.g., 494 Hz instead of 164 Hz)
@@ -153,9 +156,11 @@ cs50-pitch-perfect-analyzer/
 ├── voice_analyzer.py    # Core pitch detection algorithms
 ├── audio_utils.py       # Audio I/O and microphone handling
 ├── visualization.py     # Terminal-based charts and graphics
+├── database.py         # SQLite database operations and scoreboard
 ├── models.py           # Voice ranges and note frequency definitions
 ├── config.py           # Configuration parameters
 ├── requirements.txt    # Python dependencies
+├── pitch_perfect.db    # SQLite database (auto-created)
 ├── .gitignore         # Git ignore patterns
 └── README.md          # This file
 ```
@@ -171,10 +176,12 @@ cs50-pitch-perfect-analyzer/
 
 Run the application and follow the interactive prompts:
 
-1. **Select Microphone**: Choose from detected audio devices
-2. **Choose Gender**: Male (C3 start) or Female (C4 start)  
-3. **Sing Notes**: Follow audio cues and sing back the reference notes
-4. **View Results**: Comprehensive analysis with visual charts
+1. **Enter Personal Info**: Provide your name and surname for database storage
+2. **Select Microphone**: Choose from detected audio devices
+3. **Choose Gender**: Male (C3 start) or Female (C4 start)  
+4. **Sing Notes**: Follow audio cues and sing back the reference notes
+5. **View Results**: Comprehensive analysis with visual charts and personal statistics
+6. **Check Scoreboard**: See top 10 rankings and compare with other users
 
 ## 🚀 Future Enhancements
 
