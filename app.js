@@ -239,11 +239,14 @@ async function startTest() {
 // Mevcut notayı göster
 function showCurrentNote() {
     if (state.currentNoteIndex < 0 || state.currentNoteIndex >= NOTE_FREQUENCIES.length) {
+        console.log(`⚠️ showCurrentNote: Invalid index ${state.currentNoteIndex}`);
         return;
     }
     
     const [note, frequency] = NOTE_FREQUENCIES[state.currentNoteIndex];
     const turkishNote = notaCevirici(note);
+    const direction = state.testDirection === -1 ? '📉 Aşağı' : '📈 Yukarı';
+    console.log(`📝 showCurrentNote: ${turkishNote} (${frequency.toFixed(2)} Hz) - ${direction}`);
     elements.currentNote.textContent = `${turkishNote} (${frequency.toFixed(2)} Hz)`;
 }
 
@@ -251,12 +254,15 @@ function showCurrentNote() {
 async function runVoiceTest() {
     if (!state.isRunning) return;
     
+    console.log(`🎵 runVoiceTest başlangıç: index=${state.currentNoteIndex}, direction=${state.testDirection}`);
+    
     // Eğer geçerli bir nota indeksi yoksa, test sonlandır
     if (state.currentNoteIndex < 0 || state.currentNoteIndex >= NOTE_FREQUENCIES.length) {
         if (state.testDirection === -1) {
             // Bas testini tamamladık, şimdi tizlere geçelim
-            console.log("Şimdi tizlere doğru test ediliyor...");
+            console.log("🔄 DIRECTION DEĞİŞİMİ: Bas testini tamamladık, şimdi tizlere geçiliyor...");
             state.testDirection = 1;
+            console.log(`Direction değişti: ${state.testDirection} (yukarı)`);
             
             // Başlangıç notasını bul
             if (state.selectedGender === 'male') {
@@ -318,7 +324,9 @@ async function runVoiceTest() {
             addSuccessNote(turkishNote);
             
             // Bir sonraki notaya geç
+            console.log(`ÖNCE: currentNoteIndex=${state.currentNoteIndex}, testDirection=${state.testDirection}`);
             state.currentNoteIndex += state.testDirection;
+            console.log(`SONRA: currentNoteIndex=${state.currentNoteIndex}, testDirection=${state.testDirection}`);
             showCurrentNote();
             
             // Devam et
@@ -393,17 +401,15 @@ function calculateNoteDifficulty(note) {
 
 // Zorluğa göre başarı şansı hesaplar
 function checkNoteSuccess(difficulty) {
-    // Zorluk 50 ise %80 başarı şansı
-    // Zorluk 100 ise %20 başarı şansı
-    // Zorluk 0 ise %95 başarı şansı
-    const successChance = 95 - (difficulty * 0.75);
+    // DEBUG: Always return true to test direction logic
+    console.log(`🎯 DEBUG: Başarı zorla true döndürülüyor (difficulty: ${difficulty})`);
+    return true;
     
-    // Rastgele değer üret
-    const random = Math.random() * 100;
-    
-    console.log(`Başarı şansı: %${successChance.toFixed(1)}, Rastgele: ${random.toFixed(1)}`);
-    
-    return random <= successChance;
+    // Original logic (commented out for debugging):
+    // const successChance = 95 - (difficulty * 0.75);
+    // const random = Math.random() * 100;
+    // console.log(`Başarı şansı: %${successChance.toFixed(1)}, Rastgele: ${random.toFixed(1)}`);
+    // return random <= successChance;
 }
 
 // "Ses algılanıyor" animasyonu başlat

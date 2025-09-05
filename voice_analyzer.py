@@ -8,6 +8,15 @@ from audio_utils import record_audio, play_note
 
 def dominant_frequency(data: np.ndarray, rate: int) -> float:
     """Ses verisinden dominant frekansı hesaplar."""
+    # Ses seviyesi kontrolü
+    signal_power = np.mean(np.abs(data))
+    if signal_power < 0.001:
+        return 0
+    
+    # Normalizasyon
+    data = data / np.max(np.abs(data)) if np.max(np.abs(data)) > 0 else data
+    
+    # Windowing
     windowed = data * np.hanning(len(data))
     spectrum = np.abs(scipy.fftpack.fft(windowed))
     freqs = scipy.fftpack.fftfreq(len(spectrum), d=1/rate)
@@ -16,17 +25,36 @@ def dominant_frequency(data: np.ndarray, rate: int) -> float:
     freqs = freqs[positive_mask]
     spectrum = spectrum[positive_mask]
     
-    valid_mask = (freqs >= 60) & (freqs <= 1100)
+    # İnsan sesi için daha geniş frekans aralığı
+    valid_mask = (freqs >= 80) & (freqs <= 800)  # 80-800 Hz arası
     freqs = freqs[valid_mask]
     spectrum = spectrum[valid_mask]
     
     if len(freqs) == 0 or len(spectrum) == 0:
         return 0
-        
-    spectrum = spectrum / np.max(spectrum)
-    peaks, _ = scipy.signal.find_peaks(spectrum, height=0.05, distance=30)
     
-    return freqs[peaks[0]] if len(peaks) > 0 else 0
+    # Normalize spectrum
+    if np.max(spectrum) > 0:
+        spectrum = spectrum / np.max(spectrum)
+    
+    # Daha hassas peak detection
+    peaks, properties = scipy.signal.find_peaks(
+        spectrum, 
+        height=0.1,      # Daha yüksek eşik
+        distance=10,     # Daha yakın peaks
+        prominence=0.05   # Peak prominence
+    )
+    
+    if len(peaks) == 0:
+        # Fallback: en yüksek frekans
+        max_idx = np.argmax(spectrum)
+        return freqs[max_idx]
+    
+    # En yüksek peak'i seç
+    peak_heights = spectrum[peaks]
+    highest_peak_idx = peaks[np.argmax(peak_heights)]
+    
+    return freqs[highest_peak_idx]
 
 def identify_voice_range(frequency: float) -> str:
     """Frekansa göre ses aralığını belirler."""
@@ -40,11 +68,25 @@ def calculate_success_percentage(target_freq: float, actual_freq: float, margin:
     if actual_freq == 0:
         return 0
 
-    difference = abs(target_freq - actual_freq)
-    if difference > margin:
-        return 0
-    success = ((margin - difference) / margin) ** 2 * 100
-    return min(100, max(0, success))
+    # Oktav kontrolü - eğer 2x veya 0.5x ise aynı nota
+    ratios = [1.0, 2.0, 0.5, 4.0, 0.25]  # 1x, 2x, 0.5x, 4x, 0.25x oktavlar
+    
+    best_score = 0
+    for ratio in ratios:
+        adjusted_target = target_freq * ratio
+        difference = abs(adjusted_target - actual_freq)
+        
+        if difference <= margin:
+            score = ((margin - difference) / margin) * 100
+            # Oktav bonusu: aynı oktav ise tam puan, farklı oktav ise %80
+            if ratio == 1.0:
+                score = score  # Tam puan
+            else:
+                score = score * 0.8  # %80 puan
+            
+            best_score = max(best_score, score)
+    
+    return min(100, max(0, best_score))
 
 def run_voice_test(start_note: Tuple[str, float], direction: int) -> List[Tuple[str, float, str]]:
     """Ses testi yapar ve sonuçları döndürür."""
