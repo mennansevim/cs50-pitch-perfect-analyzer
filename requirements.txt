@@ -7,6 +7,7 @@ scipy>=1.7.0
 # Audio Processing
 sounddevice>=0.4.0
 simpleaudio>=1.0.4
+pydub>=0.25.0
 
 # Optional: Development and Testing
 # pytest>=6.0.0
