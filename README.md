@@ -1,6 +1,6 @@
 # CS50 Pitch Perfect Analyzer
 
-#### Video Demo: `<URL HERE>`
+#### Video Demo: `https://youtu.be/dXU6F9-1BeM?si=maFuepktLWQDVwa3`
 #### Description:
 
 **Advanced Voice Range Detection System with Harmonic Analysis**
@@ -41,21 +41,13 @@ This preprocessing ensures smooth, professional-quality audio playback that won'
 
 In accordance with CS50's academic honesty policy regarding AI tool usage for final projects, I acknowledge the following AI assistance:
 
-### ChatGPT Usage
+### AI Usage
 - **Code Documentation**: Asked ChatGPT to help interpret and document complex audio processing requirements
 - **Algorithm Explanation**: Used ChatGPT to clarify digital signal processing concepts and frequency analysis mathematics
 - **Error Debugging**: Consulted ChatGPT for troubleshooting specific Python audio library integration issues
-
-### Cursor AI Usage  
 - **Audio Algorithm Development**: Utilized Cursor AI's code completion for implementing advanced pitch detection algorithms
 - **Database Query Optimization**: Received assistance in crafting efficient SQLite queries for the scoreboard functionality
 - **Code Refactoring**: Used Cursor AI suggestions for improving code structure and readability
-
-### Personal Design Elements
-- **System Architecture**: The console-based application architecture was entirely my own design decision
-- **User Interface Design**: All terminal-based UI elements, progress bars, and interactive menus were personally designed
-- **Core Logic Flow**: The fundamental voice testing methodology and range calculation algorithms were my own implementation
-- **Database Schema**: SQLite database structure and relationships were designed independently
 
 The essence of this work remains my own, with AI tools serving as productivity amplifiers rather than primary creators of the codebase.
 
