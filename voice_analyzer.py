@@ -134,7 +134,6 @@ def calculate_success_percentage(target_freq: float, actual_freq: float, margin:
         
         if difference <= margin:
             score = ((margin - difference) / margin) * 100
-            # Oktav bonusu: aynı oktav ise tam puan, farklı oktav ise %80
             if ratio == 1.0:
                 score = score  # Tam puan
             else:
@@ -147,9 +146,8 @@ def calculate_success_percentage(target_freq: float, actual_freq: float, margin:
 def get_octave_info(frequency: float) -> str:
     """Frekansdan oktav bilgisini hesaplar."""
     # A4 = 440 Hz referans alarak oktav hesaplama
-    # Her oktav 2x frekans artışı demektir
     
-    # A4'ten ne kadar uzakta olduğunu hesapla
+    # A4'ten uzaklığı hesapla, çok anlamadım burayı :)
     a4_freq = 440.0
     octave_difference = np.log2(frequency / a4_freq)
     octave_number = 4 + octave_difference
@@ -181,10 +179,9 @@ def print_success_visual(nota: str, success_rate: float, dominant_freq: float) -
     else:
         status_msg = "✅ GOOD!"
     
-    # Octave information
     octave_info = get_octave_info(dominant_freq)
     
-    # Success bar (shorter)
+    # Success bar 
     bar_length = 20
     filled_length = int(bar_length * success_rate / 100)
     bar = "█" * filled_length + "░" * (bar_length - filled_length)
@@ -204,8 +201,7 @@ def print_failure_visual(nota: str, success_rate: float, dominant_freq: float, t
         tip = "💡 Sing slowly and carefully"
     else:
         tip = "💡 Very close! Try again"
-    
-    # Error bar
+    ## Hata 
     bar_length = 15
     filled_length = int(bar_length * success_rate / 100)
     bar = "█" * filled_length + "░" * (bar_length - filled_length)
@@ -242,7 +238,6 @@ def run_voice_test(start_note: Tuple[str, float], direction: int) -> Tuple[List[
         attempts = 0
 
         print(f"\n🎼 UP NEXT: {turkce_nota} ({frequency:.2f} Hz)")
-        print("🎹 Playing reference note...")
         
         while attempts < MAX_ATTEMPTS:
             attempts += 1
