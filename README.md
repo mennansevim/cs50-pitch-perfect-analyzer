@@ -413,7 +413,12 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 ## 👨‍💻 Author
 
-**Mennan Sevim** - CS50 Final Project
+**Your Name:** Mennan Sevim  
+**GitHub Username:** github.com/mennansevim  
+**edX Username:** mennansevim  
+**City and Country:** İzmir, Turkey  
+**Registration Date:** September 7, 2025
+
 - GitHub: [@mennansevim](https://github.com/mennansevim)
 - Project: [CS50 Pitch Perfect Analyzer](https://github.com/mennansevim/cs50-pitch-perfect-analyzer)
 
