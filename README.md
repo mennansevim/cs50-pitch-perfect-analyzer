@@ -1,6 +1,6 @@
 # CS50 Pitch Perfect Analyzer
 
-#### Video Demo: `https://youtu.be/dXU6F9-1BeM?si=maFuepktLWQDVwa3`
+#### Video Demo: `https://youtu.be/JzcOPJ1XdKM`
 #### Description:
 
 **Advanced Voice Range Detection System with Harmonic Analysis**
