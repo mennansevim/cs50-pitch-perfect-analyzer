@@ -3,6 +3,13 @@
 #### Video Demo: `https://youtu.be/dXU6F9-1BeM?si=maFuepktLWQDVwa3`
 #### Description:
 
+Project Title: CS50 Pitch Perfect Analyzer
+Your Name: Mennan Sevim
+GitHub Username: github.com/mennansevim
+edX Username: mennansevim
+City and Country: İzmir, Turkey
+Registration Date: September 7, 2025
+
 **Advanced Voice Range Detection System with Harmonic Analysis**
 
 🎵 A sophisticated Python application that analyzes your vocal range, detects pitch with high accuracy, and provides detailed voice type classification for choral voice grouping.
