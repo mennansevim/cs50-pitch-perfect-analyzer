@@ -287,7 +287,6 @@ Each file in this project serves a specific purpose in the overall voice analysi
 - Defines scientifically accurate voice frequency ranges
 - Contains note frequency mappings for all musical notes (C2-C6)
 - Includes voice type classifications (Soprano, Alto, Tenor, Bass)
-- Provides Turkish-to-English note name translation functions
 - Serves as the scientific foundation for all voice analysis
 
 **`visualization.py`** - Terminal Graphics and User Interface
